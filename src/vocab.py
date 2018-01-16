@@ -57,7 +57,7 @@ for line in sys.stdin:
         vocab_dict[word] = vocab_dict.get(word, 0) + 1
 
 # 低频词(次数少于4次) 过滤, 如果词长度为1需要满足词频> 9
-words_nofreq = [k for k, v in vocab_dict.items() if v < 4 or (len(k) == 1 and v < 10)]
+words_nofreq = [k for k, v in vocab_dict.items() if v < 3 or (len(k) == 1 and v < 10)]
 for word in words_nofreq:
     vocab_dict.pop(word)
 

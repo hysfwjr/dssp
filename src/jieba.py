@@ -27,9 +27,9 @@ with open(in_file, 'r') as in_f:
             line = line.strip().decode('utf-8')
             # 正则过滤, 去除@、回复
             #print >> sys.stderr, line
-            for pattern in replace_pattern:
-                line = re.subn(ur'回复@\S+:', ' ', line)[0]
-                line = re.subn(ur'@\S+', ' ', line)[0]
+            #for pattern in replace_pattern:
+            #    line = re.subn(ur'回复@\S+:', ' ', line)[0]
+            #    line = re.subn(ur'@\S+', ' ', line)[0]
             #print >> sys.stderr, line
             fields = line.strip().split('\t')
             s_id = fields[0]

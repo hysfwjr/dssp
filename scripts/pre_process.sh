@@ -11,3 +11,6 @@ cat data/data_train.seg data/data_test.seg | python src/vocab.py 1> data/vocab.d
 # 根据vocab 生成样本
 cat data/data_train.seg | python src/gen_sample.py > data/data_train.sample
 cat data/data_test.seg | python src/gen_sample.py > data/data_test.sample
+
+# 根据带有主题的vocab 生成样本
+#cat data/data_train.seg | python src/gen_sample_with_theme.py > data/data_train_with_theme.sample &
