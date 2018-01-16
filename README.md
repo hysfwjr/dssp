@@ -10,7 +10,8 @@ http://dianshi-internal.baidu.com/gemstone/competitions/detail?raceId=2
 ### 外部工具
 1. word2vec 训练
 2. stacking: refer: https://zhuanlan.zhihu.com/p/26890738
-'''python
+
+``` python
 # stacking
 from sklearn.model_selection import KFold
 ntrain = X_new.shape[0]
@@ -53,7 +54,7 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 clf = AdaBoostClassifier().fit(s_train, Y)
 
 predict_ret = clf.predict(s_test)
-'''
+```
 
 
 ### 首先跑个基线
