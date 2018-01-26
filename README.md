@@ -1,6 +1,16 @@
 ## 短文本情感极性分析
 http://dianshi-internal.baidu.com/gemstone/competitions/detail?raceId=2
 
+## usage
+1. 预测
+    # edit config: conf/dssp.cfg
+    python src/dssp.py predict conf/dssp.cfg data/test_b_predict.csv
+
+2. 模型评估, 评估单个模型交叉验证结果，多个模型融合交叉验证结果
+    python src/dssp.py model_eval conf/dssp.cfg > eval_model.txt
+
+## 说明
+
 ### 预处理
 
     sh scripts/pre_process.sh
@@ -10,52 +20,6 @@ http://dianshi-internal.baidu.com/gemstone/competitions/detail?raceId=2
 ### 外部工具
 1. word2vec 训练
 2. stacking: refer: https://zhuanlan.zhihu.com/p/26890738
-
-``` python
-# stacking
-from sklearn.model_selection import KFold
-ntrain = X_new.shape[0]
-ntest = test_X_new.shape[0]
-kf = KFold(n_splits=5, shuffle=False, random_state=2017)
-
-
-def get_oof(clf, X_train, y_train, X_test):
-    oof_train = np.zeros((ntrain,))
-    oof_test = np.zeros((ntest,))
-    oof_test_skf = np.empty((5, ntest))
-    
-    for i, (train_index, test_index) in enumerate(kf.split(X_train)):
-        kf_X_train = X_train[train_index]
-        kf_y_train = y_train[train_index]
-        kf_X_test = X_train[test_index]
-        
-        clf.fit(kf_X_train, kf_y_train)
-        
-        oof_train[test_index] = clf.predict(kf_X_test)
-        oof_test_skf[i, :] = clf.predict(X_test)
-    oof_test[:] = oof_test_skf.mean(axis=0)
-    return oof_train.reshape(-1, 1), oof_test.reshape(-1, 1)
-# model1
-clf = MultinomialNB()
-m1_train, m1_test = get_oof(clf, X_new, Y, test_X_new)
-# model2
-from sklearn.linear_model import SGDClassifier, Perceptron
-clf = Perceptron()
-m2_train, m2_test = get_oof(clf, X_new, Y, test_X_new)
-
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-clf = AdaBoostClassifier()
-m3_train, m3_test = get_oof(clf, X_new, Y, test_X_new)
-
-s_train = pandas.DataFrame({'m1': m1_train[:, 0], 'm2': m2_train[:, 0], 'm3': m3_train[:, 0], 'm4': m4_train[:, 0]})
-s_test = pandas.DataFrame({'m1': m1_test[:, 0], 'm2': m2_test[:, 0], 'm3': m3_test[:, 0], 'm4': m4_test[:, 0]})
-
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-clf = AdaBoostClassifier().fit(s_train, Y)
-
-predict_ret = clf.predict(s_test)
-```
-
 
 ### 首先跑个基线
 1. 使用高斯朴素贝叶斯5折结果0.55817775599999997([0.5515,0.5635,0.56775,0.553,0.55513878])
@@ -130,3 +94,16 @@ eta|max_depth|booster|num_round|f1
 0.4|1|gblinear|10|0.834291385346
 
 2. 使用stacking 模型融合亚光的结果
+
+#### 迭代5
+1. 切词字典添加2015/2016网络流行词,如"蓝瘦香菇/套路/撩妹"
+2. 噪声过滤。将特征全0的训练样本的y值更新为1(中性)
+3. 将特征归一化，即只要特征值>0更新为1，因为模型主要看某个词是否出现
+
+model|cv-5
+---|---
+xgboost|0.845442623756
+NB|0.835691597874
+Perceptron|0.827242284778
+RF|0.805240532921
+NB&XGBOOST|0.849142457123
