@@ -222,7 +222,7 @@ class  Classifer():
             if classifier not in self.classifiers:
                 print >> sys.stderr, '{} is not classifiers'.format(classifier)
                 return -1
-            self.fit_and_predict(classifier, classifier, train_X, train_y, test_X)
+            self.fit_and_predict(classifier, train_X, train_y, test_X)
 
     def load_data(self, train_path, test_path):
         """ load_data

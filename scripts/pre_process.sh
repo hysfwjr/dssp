@@ -2,9 +2,9 @@
 
 # 采用结巴分词, 修改jieba.py 中in_file, out_file
 echo "[`date "+%Y-%m-%d %H:%M:%S"`] seg word start ..."
-python src/jieba_seg.py /Users/wenjurong/github/dssp/data/data_train.csv /Users/wenjurong/github/dssp/data/data_train.seg
-#python src/jieba_seg.py /Users/wenjurong/github/dssp/data/data_test.csv /Users/wenjurong/github/dssp/data/data_test.seg
-python src/jieba_seg.py /Users/wenjurong/github/dssp/data/data_test_B.csv /Users/wenjurong/github/dssp/data/data_test_B.seg
+python src/jieba_seg.py data/data_train.csv data/data_train.seg
+#python src/jieba_seg.py data/data_test.csv data/data_test.seg
+python src/jieba_seg.py data/data_test_B.csv data/data_test_B.seg
 echo "[`date "+%Y-%m-%d %H:%M:%S"`] seg word finish ..."
 
 # 过滤空串、1个单词(后面去掉，因为发现艹单词影响）、停用词、高频词、低频词(次数少于3次)、人称代词 - 词袋模型
