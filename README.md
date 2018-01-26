@@ -83,6 +83,7 @@ predict_ret = clf.predict(s_test)
 
 2. badcase 分析
     * 有些单个字有含义，如训练集中第2个样本含'艹'
+    
     id|words|comment
     ---|---|---
     2|我来/艹|我来对结果产生影响
@@ -100,8 +101,32 @@ predict_ret = clf.predict(s_test)
         3. LR加上bagging，效果变差, [ 0.44616756  0.44661986  0.43141045  0.44339829  0.39516147], avg: 0.43255152404
     * 与原有特征融合，效果变差，有可能是过拟合 [ 0.6635      0.691       0.6775      0.68325     0.67391848], avg: 0.6778336959
     * 使用bagging/adboost 效果都很差, [ 0.10586422  0.16317525  0.12463332  0.09681973  0.09065407], avg: 0.116229319125
+4. 线上评估结果：0.7393
 
 #### 迭代2
 1. 考虑使用训练好的word2vec 模型找出本例中较为相近的『word』, 然后将相近的word进行合并，形成新的主题特征, 利用亚光训练好的word2vector 模型：data/data_feed_in_word2vec.txt.50.bin
    python src/vocab_sim.py > data/vocab_simi.dat 2> log/vocab_sim.log 
    python src/vocab_2_theme.py > data/vocab_2_theme.dict 2> log/vocab_2_theme.log
+
+2. 结果：提到线上f1值没有明显提升, 0.7382
+
+
+#### 迭代3
+1. 使用stacking 模型融合, ji
+2. 训练集评估结果为0.822441122056， 线上测试评估结果为0.7489
+
+#### 迭代4
+1. xgboost
+调参数
+
+eta|max_depth|booster|num_round|f1
+---|---|---|---|---|---
+0.5|3|gblinear|3|0.831641435359
+0.6|3|gblinear|3|0.830341310328
+0.4|3|gblinear|3|0.832241347837
+0.3|3|gblinear|3|0.830591260315
+0.4|2|gblinear|3|0.832241347837
+0.4|1|gblinear|3|0.832241347837
+0.4|1|gblinear|10|0.834291385346
+
+2. 使用stacking 模型融合亚光的结果

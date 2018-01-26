@@ -4,10 +4,60 @@
 
 import re
 import json
+import numpy as np
+import pandas as pd
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 vocab_path = 'data/vocab.dict'
+stopwords_file = '/Users/wenjurong/github/dssp/data/stopwords.dat'
+
+def gen_stopwords(path):
+    """ stopwords
+    Parameters
+    ----------
+    path: str, file path
+
+    Returns
+    -------
+    stopwords: set
+    """
+    stopwords = set()
+    with open(path, 'r') as f:
+        for line in f:
+            stopwords |= set(line.decode('utf-8').strip().split(' '))
+    return stopwords
+
+
+def tf_idf(vocab_dict):
+    """ tf_idf
+
+    Parameters
+    ----------
+    vocab_dict: dict, {word: [0, 1, 2, 3]} 表示每个单词在0、1、2类样本中个数，3表示测试样本个数
+
+    Returns
+    -------
+    tf_idf: pd.Series
+    """
+    vocab_datas = pd.DataFrame(vocab_dict).T
+    vocab_datas.to_csv('data/vocab_dict_aux.dat')
+    total_words = vocab_datas.sum(axis=0)
+    print >> sys.stderr, total_words
+    tf_data = vocab_datas / (total_words + 1) # 避免除0, 将total_words + 1
+    def f(x):
+	f_0 = 1 if x.iloc[0] > 0 else 0
+	f_1 = 1 if x.iloc[1] > 0 else 0
+	f_2 = 1 if x.iloc[2] > 0 else 0
+	f_3 = 1 if x.iloc[3] > 0 else 0
+	return np.log2(3.0 + 1 / (f_0 + f_1 + f_2 + 1))
+    idf_data = vocab_datas.apply(f, axis = 1)
+    tf_data['idf'] = idf_data
+    tf_idf = tf_data.apply(lambda x: '{},{},{},{}'.format(
+            x.iloc[0] * x['idf'], x.iloc[1] * x['idf'],
+            x.iloc[2] * x['idf'], x.iloc[3] * x['idf']),
+            axis = 1)
+    return tf_idf
 
 def gen_vocab(path):
     """ vocab
@@ -31,6 +81,16 @@ def gen_vocab(path):
             vocab_vector[word] = lino
             lino = lino + 1
     return vocab_vector
+
+
+def gen_vocab_black(path):
+    """ vocab black
+    """
+    vocab_black = set()
+    with open(path, 'r') as f:
+        for line in f:
+            vocab_black |= set(line.decode('utf-8').strip().split(' '))
+    return vocab_black
 
 
 def gen_vocab_with_theme(path):

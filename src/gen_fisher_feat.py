@@ -37,7 +37,10 @@ fisherdict = gen_fisherdict(fisher_path)
 title_vector = ['neg', 'neu', 'pos']
 title_print = False
 for line in sys.stdin:
-    fields = line.strip().split('\t')
+    fields = line.strip('\n').split('\t')
+    if len(fields) != 2 and len(fields) != 3:
+        print >> sys.stderr, '{} is illegal'.format(line)
+        continue
     s_id = fields[0]
     s_seg = fields[1].split('/')
     s_flag = fields[2] if len(fields) == 3 else ''

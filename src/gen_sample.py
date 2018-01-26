@@ -41,10 +41,11 @@ for line in sys.stdin:
     vec = [0] * vocab_vector_len
     for word in s_seg:
         word = word.decode('utf-8')
-        if word in vocab_vector:
-            vec[vocab_vector[word]] += 1
+        true_word = word.split('_')[0] # 去掉词性
+        if true_word in vocab_vector:
+            vec[vocab_vector[true_word]] += 1
         else:
-            #print >> sys.stderr, 'word: {} is not in vector'.format(word)
+            #print >> sys.stderr, 'true_word: {} is not in vector'.format(true_word)
             pass
     vec = map(str, vec)
     if s_flag == '': # 测试样本
