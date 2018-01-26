@@ -3,11 +3,15 @@ http://dianshi-internal.baidu.com/gemstone/competitions/detail?raceId=2
 
 ## usage
 1. 预测
-    # edit config: conf/dssp.cfg
-    python src/dssp.py predict conf/dssp.cfg data/test_b_predict.csv
+
+    	# edit config: conf/dssp.cfg
+    	bash scripts/pre_process.sh  # 预处理
+    	python src/dssp.py predict conf/dssp.cfg data/test_b_predict.csv # 训练and预测
+
 
 2. 模型评估, 评估单个模型交叉验证结果，多个模型融合交叉验证结果
-    python src/dssp.py model_eval conf/dssp.cfg > eval_model.txt
+    
+   		python src/dssp.py model_eval conf/dssp.cfg > eval_model.txt
 
 ## 说明
 

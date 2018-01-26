@@ -105,7 +105,7 @@ class  Classifer():
                 'XGBOOST': xgb.XGBClassifier(**xgb_param),
         }
         self.test_classifiers = ['NB', 'Perceptron', 'RF', 'XGBOOST']
-        self.ensemble_classifiers = ['NB', 'RF', 'XGBOOST']
+        self.ensemble_classifiers = ['NB', 'XGBOOST']
 
     def stacking_base_train(self, train_X, train_y, test_X):
         """ stacking 基分类器分类
@@ -305,7 +305,7 @@ class  Classifer():
 
         self.save_model(sec_clf, 'mystack_{}_{}'.format('&'.join(self.ensemble_classifiers),
                 model_out_path))
-        pre_mystack = sec_clf.predict(test_X)
+        pre_mystack = sec_clf.predict(s_test_X)
         self.predict_emit('mystack_{}_{}'.format('&'.join(self.ensemble_classifiers),
             test_pred_path), pre_mystack)
 
